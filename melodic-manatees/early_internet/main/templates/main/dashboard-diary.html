@@ -1,0 +1,95 @@
+{% load templatetags %}
+
+
+<div class="modal" id="diaryEntryModal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">My Journal</p>
+            <button class="delete" aria-label="close" id="diaryEntryModal-x"></button>
+        </header>
+        <section class="modal-card-body">
+            <!-- Content ... -->
+            INSERT DIARY FIELD HERE
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button is-success" id="diaryEntryModal-save">Save Entry</button>
+            <button class="button" id="diaryEntryModal-cancel">Cancel</button>
+        </footer>
+    </div>
+</div>
+
+<div class="box is-transparent">
+    <div class="columns">
+        <div class="column is-narrow">
+            <h2 class="title">Diary Entry</h2>
+        </div>
+        <div class="column">
+            <span class="is-pulled-right">
+                <button id="diaryEntryAddButton" class="button is-inverted" onclick="onDiaryEntryCreateHandler()">
+                    <span class="icon is-medium">
+                        <i class="fas fa-plus-circle"></i>
+                    </span>
+                </button>
+
+            </span>
+        </div>
+    </div>
+
+    {% for entry in diaryEntries %}
+        <article class="message">
+            <div class="message-header">
+                <p>{{ entry.title }}</p>
+                <button class="delete" aria-label="delete" onclick="onDiaryEntryDeleteHandler(this, {{entry.id}})"></button>
+            </div>
+            {% if entry.content %}
+                <div class="message-body">
+                    {{ entry.content }}
+                </div>
+            {% endif %}
+        </article>
+    {% empty %}
+        <article class="media notification">
+            <div class="media-content">
+                <div class="content">
+                    <h3>You have no entries</h3>
+                </div>
+            </div>
+        </article>
+    {% endfor %}
+</div>
+
+<script>
+    const diaryEntryModal = document.querySelector("#diaryEntryModal");
+    const diaryEntryModal_x_button = document.querySelector("#diaryEntryModal-x");
+    const diaryEntryModal_cancel_button = document.querySelector("#diaryEntryModal-cancel");
+
+    diaryEntryModal_x_button.onclick = function() {
+        diaryEntryModal.classList.remove("is-active");
+    }
+
+    diaryEntryModal_cancel_button.onclick = function() {
+        diaryEntryModal.classList.remove("is-active");
+    }
+
+    function onDiaryEntryCreateHandler() {
+        diaryEntryModal.classList.add("is-active");
+        // toggle modal up
+
+        fetch('/diary/_/create/', {
+            method: 'POST',
+            headers: {'content-type': 'application/json; charset=UTF-8', 'X-CSRF-TOKEN': {{ csrf_token }}},
+            body: {title: 'browser-title', content: 'browser-title'}
+        })
+        .then(response => response.json())
+        .then(data => console.log(data));
+    }
+    function onDiaryEntrySaveHandler() {
+        // push data to view to create diary entry
+        // add new entry
+    }
+    function onDiaryEntryDeleteHandler(el, entryID) {
+        // call to view to delete diary entry
+        el.parentElement.parentElement.remove()
+    }
+</script>

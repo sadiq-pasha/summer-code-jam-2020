@@ -8,4 +8,8 @@ urlpatterns = [
     path('<id>/', views.diary_entry_detail, name='diary-detail'),
     path('<id>/update/', views.diary_entry_update, name='diary-update'),
     path('<id>/delete/', views.diary_entry_delete, name='diary-delete'),
+
+    path('_/create/', views.diary_entry_ajax_create, name='diary-ajax-create'),
+
+
 ]

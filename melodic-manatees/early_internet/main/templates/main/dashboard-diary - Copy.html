@@ -1,0 +1,70 @@
+{% load templatetags %}
+
+<div class="box is-transparent">
+    <h2 class="title">To Do</h2>
+    {% if dairtyEntries %}
+        {% for entry in dairtyEntries %}
+            <article class="media notification">
+                <div class="media-content">
+                    <div class="content">
+                        <h3>{{ entry.title }}</h3>
+                        <p>{{ entry.content }}</p>
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    {% else %}
+        <article class="media notification">
+            <div class="media-content">
+                <div class="content">
+                    <h3>You have no entries</h3>
+                </div>
+            </div>
+        </article>
+    {% endif %}
+    <button class="button is-link" id="journal-btn">Add a Journal Entry</button>
+    <div class="modal" id="journal-modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">My Journal</p>
+                <button class="delete" aria-label="close" id="close-x"></button>
+            </header>
+            <form method="POST">
+                {% csrf_token %}
+                <section class="modal-card-body">
+                <!-- Content ... -->
+
+                    <fieldset>
+                        <div class="field">
+                            <div class="control">
+                                <p>
+                                    <label class="label">{{ diaryEntryForm.title.label_tag }}</label>
+                                    {{ diaryEntryForm.title|add_class:"input"}}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <p>
+                                    <label class="label">{{ diaryEntryForm.content.label_tag }}</label>
+                                    {{ diaryEntryForm.content|add_class:"textarea"}}
+                                </p>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                </section>
+
+                <footer class="modal-card-foot">
+                    <div class="field">
+                        <div class="control">
+                            <button class="button is-success" type="submit">Save</button>
+                            <button class="button" id="cancel-btn">Cancel</button>
+                        </div>
+                    </div>
+                </footer>
+            </form>
+        </div>
+    </div>
+</div>

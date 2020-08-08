@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required, permission_required
+from django.http import JsonResponse
 from django.shortcuts import HttpResponse, get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_http_methods
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
@@ -59,3 +61,28 @@ def diary_entry_delete(request, id):
         return redirect('diary-list')
 
     return render(request, 'diary/delete.html', {'object': obj})
+
+
+@require_http_methods(["POST"])
+@login_required
+def diary_entry_ajax_create(request):
+    form = DiaryEntryForm(request.POST)
+    if form.is_valid():
+        instance = form.save(commit=False)
+        instance.creator = request.user
+        instance.save()
+        return JsonResponse({'status': 'ok'})
+    else:
+        return JsonResponse({'status': 'nok', 'errors': form.errors()})
+
+
+@require_http_methods(["POST"])
+@login_required
+def diary_entry_ajax_save(request):
+    pass
+
+
+@require_http_methods(["POST"])
+@login_required
+def diary_entry_ajax_delete(request):
+    pass
